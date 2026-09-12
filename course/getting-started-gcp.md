@@ -11,7 +11,7 @@ the one document that names a vendor, because you have to start somewhere.
 > alongside this.** It explains *why* the repository is shaped the way it is. This guide is the
 > *how*, in order, with the commands.
 
-**Time:** about 90 minutes for Week 0, about 4 hours for Lab 1.
+**Time:** about 90 minutes for Week 0, about 5 hours for Lab 1.
 
 ```mermaid
 flowchart TD
