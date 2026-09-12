@@ -27,13 +27,19 @@ FROM python@sha256:9534e5a8e315485d4061ed659af0fd78a284c015f9b73661b41d6bab25604
 RUN useradd --create-home --uid 10001 runner
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONPATH=/app
+    PYTHONPATH=/app \
+    GIT_PYTHON_REFRESH=quiet
 
 COPY --from=builder /install /usr/local
 WORKDIR /app
 COPY --chown=runner:runner src/ ./src/
 COPY --chown=runner:runner cloudlayer/ ./cloudlayer/
 COPY --chown=runner:runner scripts/ ./scripts/
+
+# MLflow writes model artifacts to ./mlruns relative to the working directory. The
+# tracking DB goes to the mounted reports/ volume, but the artifact root does not, and
+# /app belongs to root — so create it and hand it to runner rather than relaxing USER.
+RUN mkdir -p /app/mlruns && chown runner:runner /app/mlruns
 
 USER runner
 

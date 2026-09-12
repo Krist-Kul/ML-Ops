@@ -27,7 +27,7 @@ that is deliberate, and it is why a grader can run it.
 
 The tolerance comes from measured spread, not from caution. Held at the default seed
 (`20260101`), repeated runs on this machine agree to six decimal places, and the containerised
-`linux/amd64` run agrees with the host to within CLAIM_DELTA. Changing the seed is a different matter:
+`linux/amd64` run agrees with the host to within 1.3e-5. Changing the seed is a different matter:
 seeds 20260101 / 7 / 1234 / 99 give 0.8483 / 0.8503 / 0.8610 / 0.8440, a spread of 0.017. That
 is the split moving, not the model — `data.split` groups by `machine_id`, so a new seed deals
 different machines into test. The claim above is a fixed-seed claim, and the tolerance is sized
@@ -139,7 +139,10 @@ nothing in Git to show for it.
 - The DVC remote is `${BLOB_URI}/dvc` on GCS. It is private; a grader who wants the data
   needs a reader grant on the bucket, or can regenerate it with `make data`.
 - MLflow tracks to `sqlite:///mlflow.db` in the repo root — local by design in Lab 1, moved to a
-  server in Lab 2.
+  server in Lab 2. Inside the container the tracking DB is redirected to the mounted
+  `reports/mlflow.db`, while model artifacts go to `/app/mlruns`, created and owned by the
+  non-root `runner` user. Artifacts are discarded with the container; `reports/metrics.json` is
+  what `make verify` reads.
 
 ---
 
